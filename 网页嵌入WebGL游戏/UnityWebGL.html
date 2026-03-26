@@ -1,0 +1,293 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unity WebGL 游戏嵌入示例</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        header {
+            background: linear-gradient(90deg, #4b6cb7, #182848);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        h1 {
+            margin: 0;
+            font-size: 2.5em;
+            font-weight: 300;
+        }
+        
+        .content {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            padding: 30px;
+        }
+        
+        .game-section {
+            flex: 1;
+            min-width: 300px;
+        }
+        
+        .info-section {
+            flex: 1;
+            min-width: 300px;
+        }
+        
+        .game-container {
+            width: 100%;
+            height: 500px;
+            border: 3px solid #4b6cb7;
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+            background: #000;
+        }
+        
+        #unity-container {
+            width: 100%;
+            height: 100%;
+        }
+        
+        .controls {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        button {
+            flex: 1;
+            min-width: 120px;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            background: linear-gradient(90deg, #4b6cb7, #182848);
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .info-card {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        h2 {
+            color: #182848;
+            margin-top: 0;
+        }
+        
+        ul {
+            padding-left: 20px;
+        }
+        
+        li {
+            margin-bottom: 10px;
+            line-height: 1.6;
+        }
+        
+        code {
+            background: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 20px;
+            background: #f8f9fa;
+            color: #6c757d;
+            border-top: 1px solid #e9ecef;
+        }
+        
+        @media (max-width: 768px) {
+            .content {
+                flex-direction: column;
+            }
+            
+            .game-container {
+                height: 400px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Unity WebGL 游戏嵌入演示</h1>
+            <p>将Unity游戏无缝集成到网页指定容器中</p>
+        </header>
+        
+        <div class="content">
+            <div class="game-section">
+                <h2>游戏预览区</h2>
+                <div class="game-container">
+                    <div id="unity-container"></div>
+                </div>
+                
+                <div class="controls">
+                    <button onclick="loadGame()">加载游戏</button>
+                    <button onclick="unloadGame()">卸载游戏</button>
+                    <button onclick="sendMessageToGame()">发送消息</button>
+                </div>
+            </div>
+            
+            <div class="info-section">
+                <div class="info-card">
+                    <h2>集成方法说明</h2>
+                    <ul>
+                        <li>使用 <code>UnityLoader.instantiate()</code> 方法将游戏实例挂载到指定DOM元素</li>
+                        <li>通过 <code>unityInstance.SendMessage()</code> 实现网页与游戏通信</li>
+                        <li>支持动态加载和卸载，节省页面资源</li>
+                        <li>可自定义容器尺寸并保持游戏比例</li>
+                    </ul>
+                </div>
+                
+                <div class="info-card">
+                    <h2>关键配置要点</h2>
+                    <ul>
+                        <li>确保Unity导出时选择 "Development Build" 便于调试</li>
+                        <li>设置合适的宽高比避免画面变形</li>
+                        <li>配置适当的内存分配参数</li>
+                        <li>启用压缩格式提升加载速度</li>
+                    </ul>
+                </div>
+                
+                <div class="info-card">
+                    <h2>交互控制示例</h2>
+                    <ul>
+                        <li><strong>加载游戏:</strong> 动态初始化Unity实例</li>
+                        <li><strong>卸载游戏:</strong> 释放内存并清理资源</li>
+                        <li><strong>发送消息:</strong> 触发游戏内部函数调用</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>Unity WebGL 嵌入技术 | 支持响应式布局与跨平台访问</p>
+        </footer>
+    </div>
+
+    <!-- 引入Unity WebGL加载器 -->
+    <script src="Build/UnityLoader.js"></script>
+    
+    <script>
+        let unityInstance = null;
+        
+        // 初始化Unity加载器
+        const unityLoader = {
+            instantiate: function(containerId, buildPath, config) {
+                return new Promise((resolve, reject) => {
+                    if (typeof UnityLoader === 'undefined') {
+                        reject(new Error('UnityLoader未找到，请检查路径'));
+                        return;
+                    }
+                    
+                    try {
+                        unityInstance = UnityLoader.instantiate(
+                            containerId,
+                            buildPath,
+                            Object.assign({
+                                width: '100%',
+                                height: '100%'
+                            }, config)
+                        );
+                        
+                        resolve(unityInstance);
+                    } catch (error) {
+                        reject(error);
+                    }
+                });
+            }
+        };
+        
+        // 加载游戏函数
+        async function loadGame() {
+            const container = document.getElementById('unity-container');
+            
+            // 显示加载状态
+            container.innerHTML = '<div style="color:white;text-align:center;padding-top:200px;">游戏加载中...</div>';
+            
+            try {
+                await unityLoader.instantiate(
+                    'unity-container',
+                    'Build/WebGL.json', // 替换为你的实际构建路径
+                    {
+                        width: '100%',
+                        height: '100%',
+                        backgroundColor: '#000000'
+                    }
+                );
+                
+                console.log('游戏加载成功');
+            } catch (error) {
+                console.error('游戏加载失败:', error);
+                container.innerHTML = `<div style="color:red;text-align:center;padding-top:200px;">
+                    游戏加载失败: ${error.message}
+                </div>`;
+            }
+        }
+        
+        // 卸载游戏函数
+        function unloadGame() {
+            if (unityInstance) {
+                unityInstance.Quit().then(() => {
+                    unityInstance = null;
+                    document.getElementById('unity-container').innerHTML = '';
+                    console.log('游戏已卸载');
+                }).catch(error => {
+                    console.error('卸载失败:', error);
+                });
+            }
+        }
+        
+        // 发送消息到游戏
+        function sendMessageToGame() {
+            if (unityInstance) {
+                // 示例：向游戏中的特定对象发送消息
+                unityInstance.SendMessage('GameManager', 'ReceiveMessageFromWeb', 'Hello from Web!');
+                alert('消息已发送到游戏中');
+            } else {
+                alert('请先加载游戏');
+            }
+        }
+        
+        // 页面加载完成后自动加载游戏
+        window.addEventListener('DOMContentLoaded', () => {
+            // 这里可以根据需要决定是否自动加载
+            // loadGame();
+        });
+    </script>
+</body>
+</html>
